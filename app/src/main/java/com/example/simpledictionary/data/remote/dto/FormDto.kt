@@ -1,7 +1,6 @@
 package com.example.simpledictionary.data.remote.dto
 
-data class Pronunciation(
+data class FormDto(
     val tags: List<String>?,
-    val text: String?,
-    val type: String?
+    val word: String?
 )

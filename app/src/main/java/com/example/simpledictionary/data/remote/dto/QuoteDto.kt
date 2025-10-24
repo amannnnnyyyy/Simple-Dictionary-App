@@ -1,6 +1,6 @@
 package com.example.simpledictionary.data.remote.dto
 
-data class Quote(
+data class QuoteDto(
     val reference: String?,
     val text: String?
 )

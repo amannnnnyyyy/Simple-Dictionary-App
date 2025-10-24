@@ -1,6 +1,6 @@
 package com.example.simpledictionary.data.remote.dto
 
-data class License(
+data class LicenseDto(
     val name: String?,
     val url: String?
 )
