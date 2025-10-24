@@ -1,4 +1,4 @@
-package com.example.simpledictionary.presentation
+package com.example.simpledictionary.presentation.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
