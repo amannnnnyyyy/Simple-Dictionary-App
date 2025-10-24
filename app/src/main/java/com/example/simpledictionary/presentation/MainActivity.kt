@@ -1,4 +1,4 @@
-package com.example.simpledictionary
+package com.example.simpledictionary.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,14 +11,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.simpledictionary.ui.theme.SimpleDictionaryTheme
+import com.example.simpledictionary.ui.theme.SimpleDictionaryAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            SimpleDictionaryTheme {
+            SimpleDictionaryAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
                         name = "Android",
@@ -41,7 +41,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    SimpleDictionaryTheme {
+    SimpleDictionaryAppTheme {
         Greeting("Android")
     }
 }
