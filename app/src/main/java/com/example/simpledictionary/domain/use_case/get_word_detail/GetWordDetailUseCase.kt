@@ -13,11 +13,11 @@ import javax.inject.Inject
 class GetWordDetailUseCase @Inject constructor(
     private val repository: WordDetailRepository
 ) {
-    operator fun invoke(): Flow<Resource<List<WordDetail>>> = flow {
+    operator fun invoke(word:String): Flow<Resource<List<WordDetail>>> = flow {
         try {
 
             emit(Resource.Loading())
-            val wordDetail = repository.getWordDetail("hello")
+            val wordDetail = repository.getWordDetail(word)
             emit(Resource.Success(wordDetail.map { it.toWordDetail() }))
 
         }catch (e: HttpException){
