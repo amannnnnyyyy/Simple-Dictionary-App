@@ -1,4 +1,4 @@
-package com.example.simpledictionary.presentation.ui.screen
+package com.example.simpledictionary.presentation
 
 sealed class Screen(val route:String) {
     object MainScreen: Screen("MainScreen")
