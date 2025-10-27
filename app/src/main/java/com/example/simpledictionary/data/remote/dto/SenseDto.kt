@@ -8,7 +8,7 @@ data class SenseDto(
     val definition: String?,
     val examples: List<String>?,
     val quotes: List<QuoteDto>?,
-    val subsenses: List<String>?,
+    val subsenses: List<SenseDto>?,
     val synonyms: List<String>?,
     val tags: List<String>?
 )
@@ -18,13 +18,15 @@ fun SenseDto.toSense(): Sense{
     quotes?.forEach { quoteDto ->
         quoteList.add(quoteDto.toQuote())
     }
-
+    val subsenseList = subsenses?.map {
+        it.toSense()
+    }
     return Sense(
         antonyms = antonyms,
         definition = definition,
         examples = examples,
         quotes = quoteList,
-        subsenses = subsenses,
+        subsenses = subsenseList,
         synonyms = synonyms,
         tags = tags
     )

@@ -7,6 +7,6 @@ import javax.inject.Inject
 
 data class WordDetailRepositoryImpl @Inject constructor(val api: WordApi): WordDetailRepository{
 
-    override suspend fun getWordDetail(word: String): List<WordDetailDto> = api.getWordDetail(word)
+    override suspend fun getWordDetail(word: String): WordDetailDto = api.getWordDetail(word)
 
 }

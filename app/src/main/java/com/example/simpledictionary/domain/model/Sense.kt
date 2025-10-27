@@ -5,7 +5,7 @@ data class Sense(
     val definition: String?,
     val examples: List<String>?,
     val quotes: List<Quote>?,
-    val subsenses: List<String>?,
+    val subsenses: List<Sense>?,
     val synonyms: List<String>?,
     val tags: List<String>?
 )

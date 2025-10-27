@@ -1,5 +1,6 @@
 package com.example.simpledictionary.domain.use_case.get_word_detail
 
+import android.util.Log
 import com.example.simpledictionary.common.Resource
 import com.example.simpledictionary.data.remote.dto.toWordDetail
 import com.example.simpledictionary.domain.model.WordDetail
@@ -13,12 +14,13 @@ import javax.inject.Inject
 class GetWordDetailUseCase @Inject constructor(
     private val repository: WordDetailRepository
 ) {
-    operator fun invoke(word:String): Flow<Resource<List<WordDetail>>> = flow {
+    operator fun invoke(word:String): Flow<Resource<WordDetail>> = flow {
         try {
+            Log.i("Database_fetched", "getWordDetail: started usecase")
 
             emit(Resource.Loading())
             val wordDetail = repository.getWordDetail(word)
-            emit(Resource.Success(wordDetail.map { it.toWordDetail() }))
+            emit(Resource.Success(wordDetail.toWordDetail()))
 
         }catch (e: HttpException){
             emit(Resource.Error(e.localizedMessage?:"An unexpected error occurred!"))

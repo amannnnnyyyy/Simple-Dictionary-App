@@ -4,6 +4,6 @@ import com.example.simpledictionary.domain.model.WordDetail
 
 data class WordDetailState(
     val isLoading: Boolean = false,
-    val wordDetails: List<WordDetail> = emptyList(),
+    val wordDetails: WordDetail = WordDetail(null, null),
     val error: String = ""
     )
