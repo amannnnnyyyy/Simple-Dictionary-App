@@ -33,7 +33,8 @@ fun WordHistoryListScreen(
 ) {
     var textFieldState by remember { mutableStateOf("") }
     val state = viewModel.state.value
-    Column (modifier = Modifier.fillMaxSize().padding(20.dp)){
+    val modifier = Modifier
+    Column (modifier = modifier.fillMaxSize().padding(20.dp)){
        Row {
            TextField(
                textFieldState,
@@ -50,9 +51,7 @@ fun WordHistoryListScreen(
         Spacer(modifier = Modifier.height(15.dp))
 
        // LazyColumn(modifier = Modifier.fillMaxSize()) {
-                WordDetailItem(state.wordDetails) {
-
-                }
+        WordDetailItemMock( viewModel.state.value.wordDetails,modifier = modifier)
      //   }
     }
 }

@@ -32,6 +32,7 @@ fun EntryDto.toEntry(): Entry{
     }
 
     return Entry(
+        language = language?.toLanguage(),
         antonyms = antonyms,
         forms = formList,
         partOfSpeech = partOfSpeech,

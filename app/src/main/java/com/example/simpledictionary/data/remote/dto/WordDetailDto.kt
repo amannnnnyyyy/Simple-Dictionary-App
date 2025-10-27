@@ -18,6 +18,7 @@ fun WordDetailDto.toWordDetail(): WordDetail {
 
     return WordDetail(
         entries = entryList,
-        word = word
+        word = word,
+        source = source?.toSource()
     )
 }

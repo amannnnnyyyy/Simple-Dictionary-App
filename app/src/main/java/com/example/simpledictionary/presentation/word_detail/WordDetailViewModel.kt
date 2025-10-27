@@ -42,7 +42,7 @@ class WordDetailViewModel @Inject constructor(
                     Log.i("Database_fetched", "loading: ${_state.value}")
                 }
                 is Resource.Success -> {
-                    _state.value = WordDetailState(wordDetails = result.data?: WordDetail(null, null))
+                    _state.value = WordDetailState(wordDetails = result.data?: WordDetail(null, null, null))
                     Log.i("Database_fetched", "success: ${_state.value}")
                 }
             }
