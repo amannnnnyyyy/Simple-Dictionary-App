@@ -28,7 +28,8 @@ import com.example.simpledictionary.common.Constants.MOCK_DATA
 import com.example.simpledictionary.domain.model.Source
 import com.example.simpledictionary.domain.model.WordDetail
 import com.example.simpledictionary.presentation.ui.common.ExpandableCard
-import com.example.simpledictionary.presentation.word_detail.components.SourceCard
+import com.example.simpledictionary.presentation.word_detail.components.WordDetailContent
+import com.example.simpledictionary.presentation.word_detail.components.source_card.SourceCard
 
 @Preview()
 @Composable
@@ -134,7 +135,9 @@ val constraints  = ConstraintSet{
                     verticalArrangement = spacedBy(10.dp)
                 ) {
                     itemsIndexed(data.entries?:listOf()){ index, item ->
-                        ExpandableCard(index,item,constraints)
+                        ExpandableCard(index){
+                            WordDetailContent(constraints,item)
+                        }
                     }
 
                 }

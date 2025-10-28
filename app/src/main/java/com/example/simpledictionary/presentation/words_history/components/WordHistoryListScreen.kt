@@ -56,7 +56,7 @@ fun WordHistoryListScreen(
             top.linkTo(input.bottom)
             start.linkTo(parent.start)
             end.linkTo(parent.end)
-            bottom.linkTo(parent.bottom, margin = 2.dp)
+            bottom.linkTo(parent.bottom)
             height = Dimension.fillToConstraints
         }
     }
