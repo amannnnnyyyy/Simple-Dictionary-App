@@ -14,6 +14,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.simpledictionary.presentation.navigation.Navigation
 import com.example.simpledictionary.presentation.words_history.components.WordHistoryListScreen
 import com.example.simpledictionary.ui.theme.SimpleDictionaryAppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,12 +27,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             SimpleDictionaryAppTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
-                    val navController: NavHostController = rememberNavController()
-                    NavHost(navController = navController, startDestination = Screen.MainScreen.route){
-                        composable(route = Screen.MainScreen.route) {
-                            WordHistoryListScreen(navController)
-                        }
-                    }
+                    Navigation()
                 }
             }
         }

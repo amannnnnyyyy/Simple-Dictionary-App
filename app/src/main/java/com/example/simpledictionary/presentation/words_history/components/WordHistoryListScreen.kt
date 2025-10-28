@@ -29,6 +29,7 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavController
+import com.example.simpledictionary.presentation.Screen
 import com.example.simpledictionary.presentation.word_detail.WordDetailViewModel
 
 @Composable
@@ -67,7 +68,7 @@ fun WordHistoryListScreen(
         Box(modifier = Modifier
             .fillMaxWidth()
             .layoutId("content")){
-            WordDetailItemMock( viewModel.state.value.wordDetails)
+            Text("History List")
         }
         Row(modifier = Modifier
             .layoutId("input")
@@ -81,7 +82,8 @@ fun WordHistoryListScreen(
             )
             Spacer(modifier = Modifier.width(15.dp))
             Button(onClick = {
-                viewModel.getWordDetail(textFieldState)
+                navController.navigate(Screen.DetailScreen.route+"/${textFieldState}")
+//                viewModel.getWordDetail(textFieldState)
             }) { Text("Search")}
         }
     }
