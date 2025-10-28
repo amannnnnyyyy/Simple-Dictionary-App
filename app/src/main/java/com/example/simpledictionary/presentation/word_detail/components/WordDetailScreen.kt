@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.example.simpledictionary.presentation.word_detail.WordDetailViewModel
-import com.example.simpledictionary.presentation.words_history.components.WordDetailItemMock
+import com.example.simpledictionary.presentation.word_detail.WordDetailItemMock
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -81,7 +81,7 @@ fun WordDetailScreen(
 private suspend fun handleWordCollect(word:String, viewModel: WordDetailViewModel, doneFirstLoading:(Boolean)-> Unit, updateProgress: (Float) -> Unit){
     for (x in 0..100){
         updateProgress(x.toFloat()/100f)
-        delay(50)
+        delay(20)
     }
     doneFirstLoading(true)
     delay(1000)

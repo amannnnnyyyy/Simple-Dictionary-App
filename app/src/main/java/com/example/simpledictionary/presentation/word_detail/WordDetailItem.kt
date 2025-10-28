@@ -1,4 +1,4 @@
-package com.example.simpledictionary.presentation.words_history.components
+package com.example.simpledictionary.presentation.word_detail
 
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
