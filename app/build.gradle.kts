@@ -8,6 +8,7 @@ plugins {
     kotlin("plugin.serialization") version "2.2.20"
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -79,6 +80,7 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.constraintlayout.compose)
+    implementation(libs.firebase.firestore)
 
     ksp(libs.hilt.compiler)
     testImplementation(libs.junit)

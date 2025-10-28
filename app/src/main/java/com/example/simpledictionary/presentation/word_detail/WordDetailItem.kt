@@ -1,15 +1,20 @@
 package com.example.simpledictionary.presentation.word_detail
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,6 +24,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
@@ -36,9 +42,8 @@ import com.example.simpledictionary.presentation.word_detail.components.WordDeta
 import com.example.simpledictionary.presentation.word_detail.components.WordDetailHeader
 import com.example.simpledictionary.presentation.word_detail.components.source_card.SourceCard
 
-@Preview()
 @Composable
-fun WordDetailItemMock(data: WordDetail = MOCK_DATA){
+fun WordDetailItemMock(data: WordDetail = MOCK_DATA, onAnotherWordSearched:(String)-> Unit){
     val scrollState = rememberScrollState()
     LaunchedEffect(Unit) { scrollState.animateScrollTo(100) }
 
@@ -106,7 +111,7 @@ val constraints  = ConstraintSet{
             bottom.linkTo(entries.top)
             start.linkTo(parent.start)
             end.linkTo(parent.end)
-            verticalBias = 0f
+            verticalBias = 0.1f
         }
         constrain(entries){
             top.linkTo(word.bottom)
@@ -128,14 +133,19 @@ val constraints  = ConstraintSet{
         modifier = Modifier
             .fillMaxSize()) {
 
-            Box(Modifier.layoutId("word")){
+            Row(Modifier.layoutId("word").clip(RoundedCornerShape(5.dp)).fillMaxWidth().background(Color.DarkGray),
+                horizontalArrangement = Arrangement.Center){
+                Text(data.word?:"", modifier = Modifier.padding(5.dp),
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = Color.White,
+                    overflow = TextOverflow.Ellipsis,
+                    fontStyle = FontStyle.Italic)
                 Text(data.word?:"", modifier = Modifier.padding(5.dp),
                     style = MaterialTheme.typography.headlineMedium,
                     color = Color.White,
                     overflow = TextOverflow.Ellipsis,
                     fontStyle = FontStyle.Italic)
             }
-            Spacer(Modifier.height(10.dp))
             Box(modifier = Modifier.layoutId("entries")){
                 LazyColumn(
                     modifier = Modifier.fillMaxHeight(0.7f),
@@ -149,7 +159,9 @@ val constraints  = ConstraintSet{
                                 expandedState = if (expandedState==index) -1 else index
                             }
                         }){
-                            WordDetailContent(constraints,item)
+                            WordDetailContent(constraints,item,onAnotherWordSearched={ word->
+                                onAnotherWordSearched(word)
+                            })
                         }
                     }
 

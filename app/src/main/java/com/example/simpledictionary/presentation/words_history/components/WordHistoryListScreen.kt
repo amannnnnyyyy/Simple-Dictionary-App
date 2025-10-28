@@ -31,17 +31,18 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavController
 import com.example.simpledictionary.presentation.Screen
 import com.example.simpledictionary.presentation.word_detail.WordDetailViewModel
+import com.example.simpledictionary.presentation.words_history.WordHistoryViewModel
 
 @Composable
 fun WordHistoryListScreen(
     navController: NavController,
-    viewModel: WordDetailViewModel = hiltViewModel(checkNotNull(LocalViewModelStoreOwner.current) {
+    viewModel: WordHistoryViewModel = hiltViewModel(checkNotNull(LocalViewModelStoreOwner.current) {
                 "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
             }, null)
 ) {
     var textFieldState by remember { mutableStateOf("") }
-    val state = viewModel.state.value
-    val modifier = Modifier
+  //  val state = viewModel.state.value
+   // val modifier = Modifier
 
     val constrains = ConstraintSet{
         val input = createRefFor("input")

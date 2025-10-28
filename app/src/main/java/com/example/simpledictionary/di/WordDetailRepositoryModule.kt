@@ -1,6 +1,8 @@
 package com.example.simpledictionary.di
 
+import com.example.simpledictionary.data.repository.DictionaryDaoImpl
 import com.example.simpledictionary.data.repository.WordDetailRepositoryImpl
+import com.example.simpledictionary.domain.db.DictionaryDao
 import com.example.simpledictionary.domain.repository.WordDetailRepository
 import dagger.Binds
 import dagger.Module
@@ -15,4 +17,8 @@ abstract class WordDetailRepositoryModule {
     @Binds
     @Singleton
     abstract fun bindWordDetailRepository(wordDetailRepositoryImpl: WordDetailRepositoryImpl): WordDetailRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindWordSavedHistoryRepository(dictionaryDaoImpl: DictionaryDaoImpl): DictionaryDao
 }

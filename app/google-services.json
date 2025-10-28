@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "367642834165",
+    "project_id": "simpledictionarydatabase",
+    "storage_bucket": "simpledictionarydatabase.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:367642834165:android:4fad4e34d6eb6265ef81bc",
+        "android_client_info": {
+          "package_name": "com.example.simpledictionary"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVYMFsEwcpvk_xztfzd-C2VVbrx7ekqTA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

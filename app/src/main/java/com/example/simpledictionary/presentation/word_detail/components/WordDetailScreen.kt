@@ -42,14 +42,16 @@ fun WordDetailScreen(
 
     LaunchedEffect(Unit) {
         scope.launch {
-            handleWordCollect(word, viewModel, doneFirstLoading = { value->
-                if (value){
-                  showLoading = false
-                }
-            }){ progress ->
-                currentProgress = progress
-            }
-            showFinalLoading = false
+            fetchWordDetail(word, viewModel,
+                changeShowLoading = {
+                showLoading=it
+            },
+                changeFinalShowLoading = {
+                showFinalLoading = it
+            },
+                updateProgress = {
+                    currentProgress = it
+                })
         }
     }
 
@@ -72,16 +74,48 @@ fun WordDetailScreen(
         Box(modifier = Modifier
             .fillMaxWidth()
             .layoutId("content")){
-            WordDetailItemMock( viewModel.state.value.wordDetails)
+            WordDetailItemMock( viewModel.state.value.wordDetails, onAnotherWordSearched= { word->
+                showLoading = true
+                showFinalLoading = true
+                    scope.launch {
+                        fetchWordDetail(word, viewModel,
+                            changeShowLoading = {
+                                showLoading=it
+                            },
+                            changeFinalShowLoading = {
+                                showFinalLoading = it
+                            },
+                            updateProgress = {
+                                currentProgress = it
+                            })
+                    }
+            })
         }
     }
+}
+
+private suspend fun fetchWordDetail(
+    word:String,
+    viewModel: WordDetailViewModel,
+    changeShowLoading:(Boolean)-> Unit,
+    changeFinalShowLoading: (Boolean)-> Unit,
+    updateProgress: (Float) -> Unit
+    ){
+    handleWordCollect(word, viewModel, doneFirstLoading = { value->
+        if (value){
+           changeShowLoading(false)
+        }
+    }){ progress ->
+        updateProgress(progress)
+    }
+    changeFinalShowLoading(false)
 }
 
 
 private suspend fun handleWordCollect(word:String, viewModel: WordDetailViewModel, doneFirstLoading:(Boolean)-> Unit, updateProgress: (Float) -> Unit){
     for (x in 0..100){
         updateProgress(x.toFloat()/100f)
-        delay(20)
+        delay(5)
     }
     doneFirstLoading(true)
     delay(1000)

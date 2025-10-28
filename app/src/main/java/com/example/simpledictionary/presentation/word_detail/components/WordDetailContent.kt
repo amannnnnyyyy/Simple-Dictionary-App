@@ -2,6 +2,7 @@ package com.example.simpledictionary.presentation.word_detail.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,7 +31,7 @@ import androidx.constraintlayout.compose.layoutId
 import com.example.simpledictionary.domain.model.Entry
 
 @Composable
-fun WordDetailContent(constraints: ConstraintSet, item: Entry) {
+fun WordDetailContent(constraints: ConstraintSet, item: Entry, onAnotherWordSearched:(String)-> Unit) {
     ConstraintLayout(constraints, modifier = Modifier.fillMaxSize()) {
         Box(modifier = Modifier.background(color = Color.Blue).layoutId("language")){
             FlowRow(modifier = Modifier.fillMaxWidth()) {
@@ -72,9 +73,15 @@ fun WordDetailContent(constraints: ConstraintSet, item: Entry) {
             val forms = item.forms
             FlowRow(verticalArrangement = spacedBy(5.dp)) {
                 for (form in forms?:listOf()){
-                    Text(form.word?:"", modifier = Modifier.border(1.dp, Color.DarkGray,
-                        RoundedCornerShape(10.dp)
-                    ).padding(3.dp))
+                    Text(form.word?:"",
+                        modifier = Modifier
+                            .border(1.dp, Color.DarkGray,
+                        RoundedCornerShape(10.dp))
+                            .padding(3.dp)
+                            .clickable(true){
+                                onAnotherWordSearched(form.word?:"sorry")
+                            }
+                    )
                     Spacer(Modifier.width(5.dp))
                     Spacer(Modifier.height(5.dp))
                 }
