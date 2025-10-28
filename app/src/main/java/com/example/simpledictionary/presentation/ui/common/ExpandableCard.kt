@@ -1,6 +1,5 @@
 package com.example.simpledictionary.presentation.ui.common
 
-import android.graphics.drawable.Icon
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,13 +19,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -40,71 +37,18 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
-import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.layoutId
 import com.example.simpledictionary.common.Constants.MOCK_DATA
 import com.example.simpledictionary.domain.model.Entry
 
-val constraints  = ConstraintSet{
-    val language = createRefFor("language")
-    val pronunciations = createRefFor("pronunciations")
-    val forms = createRefFor("forms")
-    val senses = createRefFor("senses")
-    val synonyms = createRefFor("synonyms")
-    val antonyms = createRefFor("antonyms")
 
-    constrain(language){
-        top.linkTo(parent.top, margin = 5.dp)
-        start.linkTo(parent.start)
-        end.linkTo(parent.end)
-        width = Dimension.matchParent
-    }
-
-    constrain(pronunciations){
-        top.linkTo(language.bottom, margin = 5.dp)
-        start.linkTo(parent.start)
-        end.linkTo(parent.end)
-        width = Dimension.matchParent
-    }
-
-    constrain(forms){
-        top.linkTo(pronunciations.bottom, margin = 5.dp)
-        start.linkTo(parent.start)
-        end.linkTo(parent.end)
-        width = Dimension.matchParent
-    }
-
-    constrain(senses){
-        top.linkTo(forms.bottom, margin = 5.dp)
-        start.linkTo(parent.start)
-        end.linkTo(parent.end)
-        width = Dimension.matchParent
-    }
-    constrain(synonyms){
-        top.linkTo(senses.bottom, margin = 5.dp)
-        bottom.linkTo(antonyms.top)
-        start.linkTo(parent.start)
-        end.linkTo(parent.end)
-        width = Dimension.matchParent
-    }
-    constrain(antonyms){
-        top.linkTo(synonyms.bottom, margin = 5.dp)
-        start.linkTo(parent.start)
-        end.linkTo(parent.end)
-        width = Dimension.matchParent
-    }
-
-}
-@Preview()
 @Composable
-fun ExpandableCard(index: Int = 0, item: Entry= MOCK_DATA.entries?.get(0)?: Entry(null, null, null, null, null, null, null), constraints: ConstraintSet = com.example.simpledictionary.presentation.ui.common.constraints, modifier: Modifier = Modifier) {
-    var expandedState by remember { mutableStateOf(if (index==0)0 else -1) }
+fun ExpandableCard(index: Int = 0, item: Entry= MOCK_DATA.entries?.get(0)?: Entry(null, null, null, null, null, null, null), constraints: ConstraintSet) {
+    var expandedState by remember { mutableIntStateOf(if (index==0)0 else -1) }
     val rotationState by animateFloatAsState(
         targetValue = if((expandedState!=-1)) 90f else 0f
     )
@@ -261,7 +205,7 @@ fun ExpandableCard(index: Int = 0, item: Entry= MOCK_DATA.entries?.get(0)?: Entr
                         val synonyms = item.synonyms
                         if ((synonyms?.size?:0)>0){
                             Text("Synonyms")
-                            FlowRow () {
+                            FlowRow  {
                                 for(syn in synonyms?:listOf()){
                                     Text(syn, Modifier.clip(RoundedCornerShape(15.dp)).padding(2.dp).background(Color.LightGray).padding(2.dp), color = Color.Black)
                                     Spacer(Modifier.width(5.dp))
@@ -273,7 +217,7 @@ fun ExpandableCard(index: Int = 0, item: Entry= MOCK_DATA.entries?.get(0)?: Entr
                         val antonyms = item.antonyms
                         if ((antonyms?.size?:0)>0){
                             Text("Antonyms")
-                            FlowRow() {
+                            FlowRow {
                                 for(ant in antonyms?:listOf()){
                                     Text(ant, color = Color.Black,modifier = Modifier.clip(RoundedCornerShape(15.dp)).padding(2.dp).background(Color.LightGray).padding(2.dp))
                                     Spacer(Modifier.width(5.dp))

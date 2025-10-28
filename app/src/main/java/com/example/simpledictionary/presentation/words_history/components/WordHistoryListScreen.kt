@@ -1,5 +1,7 @@
 package com.example.simpledictionary.presentation.words_history.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +20,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintSet
+import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavController
@@ -34,24 +41,48 @@ fun WordHistoryListScreen(
     var textFieldState by remember { mutableStateOf("") }
     val state = viewModel.state.value
     val modifier = Modifier
-    Column (modifier = modifier.fillMaxSize().padding(20.dp)){
-       Row {
-           TextField(
-               textFieldState,
-               label = { Text("Search a word") },
-               onValueChange = { textFieldState = it },
-               singleLine = true,
-               modifier = Modifier.fillMaxWidth(0.6f)
-           )
-           Spacer(modifier = Modifier.width(15.dp))
-           Button(onClick = {
-              viewModel.getWordDetail(textFieldState)
-           }) { Text("Search")}
-       }
-        Spacer(modifier = Modifier.height(15.dp))
 
-       // LazyColumn(modifier = Modifier.fillMaxSize()) {
-        WordDetailItemMock( viewModel.state.value.wordDetails,modifier = modifier)
-     //   }
+    val constrains = ConstraintSet{
+        val input = createRefFor("input")
+        val content = createRefFor("content")
+
+        constrain(input){
+            top.linkTo(parent.top, margin = 20.dp)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+        }
+
+        constrain(content){
+            top.linkTo(input.bottom)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+            bottom.linkTo(parent.bottom, margin = 2.dp)
+            height = Dimension.fillToConstraints
+        }
+    }
+
+
+
+    ConstraintLayout(constrains,modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .layoutId("content")){
+            WordDetailItemMock( viewModel.state.value.wordDetails)
+        }
+        Row(modifier = Modifier
+            .layoutId("input")
+            .background(Color.Cyan)) {
+            TextField(
+                textFieldState,
+                label = { Text("Search a word") },
+                onValueChange = { textFieldState = it },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(0.6f)
+            )
+            Spacer(modifier = Modifier.width(15.dp))
+            Button(onClick = {
+                viewModel.getWordDetail(textFieldState)
+            }) { Text("Search")}
+        }
     }
 }
