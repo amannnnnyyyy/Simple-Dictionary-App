@@ -14,6 +14,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
@@ -29,6 +33,7 @@ import com.example.simpledictionary.domain.model.Source
 import com.example.simpledictionary.domain.model.WordDetail
 import com.example.simpledictionary.presentation.ui.common.ExpandableCard
 import com.example.simpledictionary.presentation.word_detail.components.WordDetailContent
+import com.example.simpledictionary.presentation.word_detail.components.WordDetailHeader
 import com.example.simpledictionary.presentation.word_detail.components.source_card.SourceCard
 
 @Preview()
@@ -36,6 +41,8 @@ import com.example.simpledictionary.presentation.word_detail.components.source_c
 fun WordDetailItemMock(data: WordDetail = MOCK_DATA){
     val scrollState = rememberScrollState()
     LaunchedEffect(Unit) { scrollState.animateScrollTo(100) }
+
+    var expandedState by remember { mutableIntStateOf(0) }
 
 
 val constraints  = ConstraintSet{
@@ -135,7 +142,13 @@ val constraints  = ConstraintSet{
                     verticalArrangement = spacedBy(10.dp)
                 ) {
                     itemsIndexed(data.entries?:listOf()){ index, item ->
-                        ExpandableCard(index){
+                        ExpandableCard(index==expandedState, changeExpandedState = {
+                            expandedState = if (expandedState==index) -1 else index
+                        }, header = {
+                            WordDetailHeader(index, expandedState){
+                                expandedState = if (expandedState==index) -1 else index
+                            }
+                        }){
                             WordDetailContent(constraints,item)
                         }
                     }

@@ -34,52 +34,35 @@ import androidx.compose.ui.unit.sp
 import com.example.simpledictionary.R
 import com.example.simpledictionary.common.Constants.MOCK_DATA
 import com.example.simpledictionary.domain.model.Source
+import com.example.simpledictionary.presentation.ui.common.ExpandableCard
 
 
 @Preview()
 @Composable
 fun SourceCard(source: Source= MOCK_DATA.source?:Source(null, null)) {
     var expandedState by remember { mutableStateOf(false) }
-    val rotationState by animateFloatAsState(
-        targetValue = if ((expandedState)) 0f else 180f
-    )
-
     var showTextAnimated by remember { mutableStateOf(true) }
-
-
-
 
     Card(
         modifier = Modifier.fillMaxWidth()
             .animateContentSize()
     ) {
-        IconButton(modifier = Modifier.fillMaxWidth(),onClick = {
-            showTextAnimated = !showTextAnimated
-            expandedState = !expandedState
-        }) {
-            Icon(
-                painter = painterResource(id =R.drawable.down_arrow),
-                contentDescription = "arrow",
-                modifier = Modifier.rotate(rotationState),
-            )
-        }
         Column(modifier = Modifier.fillMaxWidth().padding(12.dp).animateContentSize()) {
-            AnimatedVisibility(visible = showTextAnimated,
-                enter = slideInHorizontally() + fadeIn(animationSpec = tween(durationMillis = 500, easing = LinearEasing)),
-                exit = slideOutHorizontally() + fadeOut(animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing))
-            ) {
-                Text(
-                    "Source",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 25.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                )
-            }
-            if (expandedState){
-                SourceContent(source = source)
+            ExpandableCard(
+                expandedState,
+                changeExpandedState = {
+                    expandedState = !expandedState
+                },
+                header = {
+                    SourceHeader(
+                        showTextAnimated,
+                        expandedState,
+                        changeAnimatedTextStatus = {
+                            showTextAnimated = !showTextAnimated
+                        }){
+                        expandedState = !expandedState
+                    }}) {
+                SourceContent(source)
             }
         }
     }
