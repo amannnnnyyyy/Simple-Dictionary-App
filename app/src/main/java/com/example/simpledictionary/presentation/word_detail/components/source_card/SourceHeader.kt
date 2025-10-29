@@ -9,12 +9,15 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
@@ -30,28 +33,30 @@ fun SourceHeader(showTextAnimated:Boolean, expandedState:Boolean, changeAnimated
         targetValue = if ((expandedState)) 0f else 180f
     )
 
-    IconButton(modifier = Modifier.fillMaxWidth(),onClick = {
-        changeAnimatedTextStatus()
-        changeExpandedState()
-    }) {
-        Icon(
-            painter = painterResource(id =R.drawable.down_arrow),
-            contentDescription = "arrow",
-            modifier = Modifier.rotate(rotationState),
-        )
-    }
-    AnimatedVisibility(visible = showTextAnimated,
-        enter = slideInHorizontally() + fadeIn(animationSpec = tween(durationMillis = 500, easing = LinearEasing)),
-        exit = slideOutHorizontally() + fadeOut(animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing))
-    ) {
-        Text(
-            "Source",
-            fontWeight = FontWeight.Bold,
-            fontSize = 25.sp,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-        )
+    Column(horizontalAlignment = Alignment.CenterHorizontally){
+        IconButton(modifier = Modifier.wrapContentWidth(),onClick = {
+            changeAnimatedTextStatus()
+            changeExpandedState()
+        }) {
+            Icon(
+                painter = painterResource(id =R.drawable.down_arrow),
+                contentDescription = "arrow",
+                modifier = Modifier.rotate(rotationState),
+            )
+        }
+        AnimatedVisibility(visible = showTextAnimated,
+            enter = slideInHorizontally() + fadeIn(animationSpec = tween(durationMillis = 500, easing = LinearEasing)),
+            exit = slideOutHorizontally() + fadeOut(animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing))
+        ) {
+            Text(
+                "Source",
+                fontWeight = FontWeight.Bold,
+                fontSize = 25.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.wrapContentWidth(),
+                textAlign = TextAlign.Center,
+            )
+        }
     }
 }

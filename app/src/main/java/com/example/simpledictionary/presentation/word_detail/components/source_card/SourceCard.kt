@@ -4,12 +4,14 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -25,10 +27,23 @@ fun SourceCard(source: Source= MOCK_DATA.source?:Source(null, null)) {
     var showTextAnimated by remember { mutableStateOf(true) }
 
     Card(
-        modifier = Modifier.fillMaxWidth()
-            .animateContentSize()
+        modifier = if (expandedState)
+            Modifier
+                .fillMaxWidth()
+                .animateContentSize()
+            else Modifier
+                .animateContentSize()
     ) {
-        Column(modifier = Modifier.fillMaxWidth().padding(12.dp).animateContentSize()) {
+        Column(
+            modifier = if (expandedState)
+                Modifier.fillMaxWidth()
+                    .padding(12.dp)
+                    else
+                Modifier
+                    .padding(0.dp)
+                .animateContentSize()
+            , horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             ExpandableCard(
                 expandedState,
                 changeExpandedState = {

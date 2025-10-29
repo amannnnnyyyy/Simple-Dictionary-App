@@ -2,6 +2,9 @@ package com.example.simpledictionary.presentation.word_detail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
@@ -11,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -34,6 +39,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
@@ -47,11 +53,14 @@ import com.example.simpledictionary.presentation.ui.common.ExpandableCard
 import com.example.simpledictionary.presentation.word_detail.components.WordDetailContent
 import com.example.simpledictionary.presentation.word_detail.components.WordDetailHeader
 import com.example.simpledictionary.presentation.word_detail.components.source_card.SourceCard
+import kotlin.math.roundToInt
 
 @Preview()
 @Composable
 fun WordDetailItemMock(data: WordDetail = MOCK_DATA, onSaveClicked:()-> Unit={}, onAnotherWordSearched:(String)-> Unit={}){
     val scrollState = rememberScrollState()
+    var offsetX by remember { mutableFloatStateOf(0f) }
+    var offsetY by remember { mutableFloatStateOf(0f) }
     LaunchedEffect(Unit) { scrollState.animateScrollTo(100) }
 
     var expandedState by remember { mutableIntStateOf(0) }
@@ -118,11 +127,11 @@ val constraints  = ConstraintSet{
             bottom.linkTo(entries.top)
             start.linkTo(parent.start)
             end.linkTo(parent.end)
-            verticalBias = 0.1f
+            verticalBias = 0.2f
         }
         constrain(entries){
-            top.linkTo(word.bottom)
-            bottom.linkTo(source.top)
+            top.linkTo(word.bottom, margin = 10.dp)
+//            bottom.linkTo(source.top)
             start.linkTo(parent.start)
             end.linkTo(parent.end)
             verticalBias = 0f
@@ -138,7 +147,8 @@ val constraints  = ConstraintSet{
 
     ConstraintLayout(wholeConstraints,
         modifier = Modifier
-            .fillMaxSize()) {
+            .fillMaxSize().padding(top=10.dp)
+    ) {
 
             Row(verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -186,7 +196,16 @@ val constraints  = ConstraintSet{
 
                 }
             }
-            Box(modifier = Modifier.layoutId("source")){
+            Box(modifier = Modifier
+                .layoutId("source")
+                .offset{IntOffset(offsetX.roundToInt(), offsetY.roundToInt())}
+                .draggable(
+                orientation = Orientation.Horizontal,
+                state = rememberDraggableState { delta ->
+                    offsetX += delta
+                }
+            )
+            ){
                 SourceCard(data.source?:Source(null, null))
             }
     }
