@@ -1,6 +1,7 @@
 package com.example.simpledictionary.presentation.words_history.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -23,10 +24,21 @@ import androidx.compose.ui.unit.sp
 
 @Preview()
 @Composable
-fun WordListItem(word:String = "",description:String="") {
-    Box(modifier = Modifier.fillMaxWidth().height(100.dp).clip(RoundedCornerShape(10.dp)).background(
-        Color.DarkGray).shadow(2.dp, RoundedCornerShape(10.dp), spotColor = Color.Cyan).padding(15.dp)){
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxSize().padding(5.dp)) {
+fun WordListItem(word:String = "test",description:String="test desc", onClick:()-> Unit = {}) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(10.dp))
+            .background(Color.DarkGray)
+            .shadow(1.dp,
+                RoundedCornerShape(2.dp),
+                spotColor = Color.Cyan)
+            .padding(10.dp)
+            .clickable(true){
+                onClick()
+            }
+    ){
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth().padding(2.dp)) {
             Text(word, color = Color.White, fontSize = 22.sp, modifier = Modifier.weight(1f).padding(5.dp), maxLines = 1, overflow = TextOverflow.Ellipsis)
             Text(description, color = Color.White, fontSize = 22.sp, modifier = Modifier.weight(1f).padding(5.dp), maxLines = 2, overflow = TextOverflow.Ellipsis)
         }

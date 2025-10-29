@@ -1,6 +1,7 @@
 package com.example.simpledictionary.presentation.words_history
 
 import android.util.Log
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.log
 
 @HiltViewModel
 class WordHistoryViewModel@Inject constructor(
@@ -21,7 +23,12 @@ class WordHistoryViewModel@Inject constructor(
 ): ViewModel() {
 
     private val _state = mutableStateOf<Resource<List<WordDetail>>>(Resource.Loading())
-    val state = _state
+    val state: State<Resource<List<WordDetail>>> = _state
+
+    val noSimilarDataNotifier = mutableStateOf(false)
+
+    private val _stateForFiltering = mutableStateOf<Resource<List<WordDetail>>>(Resource.Loading())
+    val stateForFiltering: State<Resource<List<WordDetail>>> = _stateForFiltering
 
     init {
         viewModelScope.launch {
@@ -41,6 +48,22 @@ class WordHistoryViewModel@Inject constructor(
             }
         }
 
+    }
+
+    fun filterWordDetailsByWord(word:String){
+        val res = state.value
+        when(res){
+            is Resource.Success -> {
+                val data = res.data
+                val filteredData = data?.filter { wordDetail ->
+                    Log.i("Searching", "${wordDetail.word} : $word")
+                    wordDetail.word?.startsWith(word,ignoreCase = true)?:true
+                }
+                noSimilarDataNotifier.value = (filteredData?.size?:0)==0
+                _stateForFiltering.value = Resource.Success(filteredData?: listOf())
+            }
+            else->{}
+        }
     }
 
     fun getWord(wordDetail: WordDetail){
