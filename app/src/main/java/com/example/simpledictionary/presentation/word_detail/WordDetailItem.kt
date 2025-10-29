@@ -1,6 +1,7 @@
 package com.example.simpledictionary.presentation.word_detail
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
@@ -11,10 +12,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,9 +26,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,6 +39,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.layoutId
+import com.example.simpledictionary.R
 import com.example.simpledictionary.common.Constants.MOCK_DATA
 import com.example.simpledictionary.domain.model.Source
 import com.example.simpledictionary.domain.model.WordDetail
@@ -42,8 +48,9 @@ import com.example.simpledictionary.presentation.word_detail.components.WordDeta
 import com.example.simpledictionary.presentation.word_detail.components.WordDetailHeader
 import com.example.simpledictionary.presentation.word_detail.components.source_card.SourceCard
 
+@Preview()
 @Composable
-fun WordDetailItemMock(data: WordDetail = MOCK_DATA, onAnotherWordSearched:(String)-> Unit){
+fun WordDetailItemMock(data: WordDetail = MOCK_DATA, onSaveClicked:()-> Unit={}, onAnotherWordSearched:(String)-> Unit={}){
     val scrollState = rememberScrollState()
     LaunchedEffect(Unit) { scrollState.animateScrollTo(100) }
 
@@ -133,18 +140,30 @@ val constraints  = ConstraintSet{
         modifier = Modifier
             .fillMaxSize()) {
 
-            Row(Modifier.layoutId("word").clip(RoundedCornerShape(5.dp)).fillMaxWidth().background(Color.DarkGray),
-                horizontalArrangement = Arrangement.Center){
-                Text(data.word?:"", modifier = Modifier.padding(5.dp),
+            Row(verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .layoutId("word")
+                    .clip(RoundedCornerShape(5.dp))
+                    .fillMaxWidth()
+                    .background(Color.DarkGray)
+                    .padding(15.dp)
+                ,
+                horizontalArrangement = Arrangement.SpaceBetween){
+                Text(data.word?:"",
+                    modifier = Modifier.padding(5.dp).weight(2f),
                     style = MaterialTheme.typography.headlineMedium,
                     color = Color.White,
+                    maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     fontStyle = FontStyle.Italic)
-                Text(data.word?:"", modifier = Modifier.padding(5.dp),
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = Color.White,
-                    overflow = TextOverflow.Ellipsis,
-                    fontStyle = FontStyle.Italic)
+                Icon(
+                    painterResource(R.drawable.unsaved),
+                    "Saved Status Indicator",
+                    modifier = Modifier.clickable(true){
+                        onSaveClicked()
+                    }.height(20.dp).width(20.dp)
+                        .weight(1f)
+                )
             }
             Box(modifier = Modifier.layoutId("entries")){
                 LazyColumn(

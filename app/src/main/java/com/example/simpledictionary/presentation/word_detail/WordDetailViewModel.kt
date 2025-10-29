@@ -21,14 +21,6 @@ class WordDetailViewModel @Inject constructor(
     private val _state = mutableStateOf(WordDetailState())
     val state: State<WordDetailState> = _state
 
-    init {
-//        savedStateHandle.get<String>("word")?.let { word ->
-//            getWordDetail(word)
-//        }
-        Log.i("Database_fetched", ": stated the shit")
-        getWordDetail("hello")
-    }
-
     fun getWordDetail(word:String){
         Log.i("Database_fetched", "getWordDetail: to call usecase")
         getWordDetailUseCase(word).onEach { result->

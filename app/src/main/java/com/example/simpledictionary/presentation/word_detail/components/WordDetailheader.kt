@@ -22,7 +22,7 @@ fun WordDetailHeader(index: Int, expandedState: Int, changeExpandedState:()->Uni
     )
 
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Text("Word Detail ${index+1}",
+        Text("Meaning ${index+1}",
             fontWeight = FontWeight.Bold,
             fontSize = 25.sp,
             modifier = Modifier.weight(6f),

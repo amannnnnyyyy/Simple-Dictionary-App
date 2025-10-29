@@ -39,6 +39,7 @@ fun WordHistoryListScreen(
             }, null)
 ) {
     var textFieldState by remember { mutableStateOf("") }
+    viewModel.noSimilarDataNotifier.value = false
 
     val constrains = ConstraintSet{
         val input = createRefFor("input")

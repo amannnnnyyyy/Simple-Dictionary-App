@@ -31,7 +31,7 @@ import androidx.constraintlayout.compose.layoutId
 import com.example.simpledictionary.domain.model.Entry
 
 @Composable
-fun WordDetailContent(constraints: ConstraintSet, item: Entry, onAnotherWordSearched:(String)-> Unit) {
+fun WordDetailContent(constraints: ConstraintSet, item: Entry = Entry(null, null, null, null, null, null, null), onAnotherWordSearched:(String)-> Unit={}) {
     ConstraintLayout(constraints, modifier = Modifier.fillMaxSize()) {
         Box(modifier = Modifier.background(color = Color.Blue).layoutId("language")){
             FlowRow(modifier = Modifier.fillMaxWidth()) {
