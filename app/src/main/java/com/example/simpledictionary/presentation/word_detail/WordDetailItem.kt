@@ -174,7 +174,7 @@ val constraints  = ConstraintSet{
                         ExpandableCard(index==expandedState, changeExpandedState = {
                             expandedState = if (expandedState==index) -1 else index
                         }, header = {
-                            WordDetailHeader(index, expandedState){
+                            WordDetailHeader(index, word = data.word?:"", meaning = item.senses?.getOrNull(0)?.definition?:"", expandedState){
                                 expandedState = if (expandedState==index) -1 else index
                             }
                         }){
