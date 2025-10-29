@@ -8,14 +8,20 @@ import androidx.lifecycle.viewModelScope
 import com.example.simpledictionary.common.Resource
 import com.example.simpledictionary.domain.model.WordDetail
 import com.example.simpledictionary.domain.use_case.word_detail_online.GetWordDetailUseCase
+import com.example.simpledictionary.domain.use_case.words_history.AddWordHistoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class WordDetailViewModel @Inject constructor(
-    private val getWordDetailUseCase: GetWordDetailUseCase
+    private val getWordDetailUseCase: GetWordDetailUseCase,
+    private val addWordHistoryUseCase: AddWordHistoryUseCase
+
 ): ViewModel(){
 
     private val _state = mutableStateOf(WordDetailState())
@@ -39,5 +45,17 @@ class WordDetailViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+
+    fun addWordDetail(wordDetail: WordDetail){
+        Log.i("FireStoreAdd", "Result: started it")
+
+        viewModelScope.launch(Dispatchers.IO) {
+            addWordHistoryUseCase(wordDetail).collectLatest { addedWord->
+                Log.i("FireStoreAdd", "Result: started $addedWord")
+            }
+        }
+
     }
 }

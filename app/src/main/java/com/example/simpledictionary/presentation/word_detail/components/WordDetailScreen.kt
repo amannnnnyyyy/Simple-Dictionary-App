@@ -75,7 +75,7 @@ fun WordDetailScreen(
             .fillMaxWidth()
             .layoutId("content")){
             WordDetailItemMock( viewModel.state.value.wordDetails, onSaveClicked = {
-                //todo save to smpl db
+                viewModel.addWordDetail(viewModel.state.value.wordDetails)
             }, onAnotherWordSearched= { word->
                 showLoading = true
                 showFinalLoading = true

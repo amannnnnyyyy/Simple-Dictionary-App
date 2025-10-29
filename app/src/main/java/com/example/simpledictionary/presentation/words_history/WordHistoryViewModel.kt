@@ -18,8 +18,7 @@ import kotlin.math.log
 
 @HiltViewModel
 class WordHistoryViewModel@Inject constructor(
-    private val getWordHistoryUseCase: GetWordHistoryUseCase,
-    private val addWordHistoryUseCase: AddWordHistoryUseCase
+    private val getWordHistoryUseCase: GetWordHistoryUseCase
 ): ViewModel() {
 
     private val _state = mutableStateOf<Resource<List<WordDetail>>>(Resource.Loading())
@@ -37,17 +36,6 @@ class WordHistoryViewModel@Inject constructor(
                 _state.value = wordDetailList
             }
         }
-    }
-
-    fun addWordDetail(wordDetail: WordDetail){
-        Log.i("FireStoreAdd", "Result: started it")
-
-        viewModelScope.launch(Dispatchers.IO) {
-            addWordHistoryUseCase(wordDetail).collectLatest { addedWord->
-                Log.i("FireStoreAdd", "Result: started $addedWord")
-            }
-        }
-
     }
 
     fun filterWordDetailsByWord(word:String){
@@ -70,9 +58,9 @@ class WordHistoryViewModel@Inject constructor(
         Log.i("FireStoreAdd", "Result: started it")
 
         viewModelScope.launch(Dispatchers.IO) {
-            addWordHistoryUseCase(wordDetail).collectLatest { addedWord->
-                Log.i("FireStoreAdd", "Result: started $addedWord")
-            }
+//            addWordHistoryUseCase(wordDetail).collectLatest { addedWord->
+//                Log.i("FireStoreAdd", "Result: started $addedWord")
+//            }
         }
 
     }
