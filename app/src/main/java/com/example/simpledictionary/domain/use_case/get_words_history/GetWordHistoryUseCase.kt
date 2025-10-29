@@ -1,12 +1,12 @@
 package com.example.simpledictionary.domain.use_case.get_words_history
 
-import android.util.Log
 import com.example.simpledictionary.common.Resource
 import com.example.simpledictionary.domain.db.DictionaryDao
 import com.example.simpledictionary.domain.model.WordDetail
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import okio.IOException
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -14,18 +14,20 @@ import javax.inject.Inject
 data class GetWordHistoryUseCase@Inject constructor(
     private val repository: DictionaryDao
 ){
-    operator fun invoke(): Flow<Resource<List<WordDetail>>> = flow {
-        try {
-            Log.i("Database_fetched", "getWordDetail: started usecase")
-
-            emit(Resource.Loading())
-            repository.getWords().collectLatest { wordDetails ->
-                emit(Resource.Success(wordDetails))
+    operator fun invoke(): Flow<Resource<List<WordDetail>>>{
+        return repository.getWords()
+            .map<List<WordDetail>, Resource<List<WordDetail>>> { wordDetails ->
+                Resource.Success(wordDetails)
             }
-        }catch (e: HttpException){
-            emit(Resource.Error(e.localizedMessage?:"An unexpected error occurred!"))
-        }catch (e: IOException){
-            emit(Resource.Error("Couldn't reach server. Check your internet connection!"))
-        }
+            .onStart {
+                emit(Resource.Loading())
+            }
+            .catch { exception ->
+                when (exception) {
+                    is HttpException -> emit(Resource.Error(exception.localizedMessage ?: "An unexpected error occurred!"))
+                    is IOException -> emit(Resource.Error("Couldn't reach server. Check your internet connection!"))
+                    else -> emit(Resource.Error(exception.message ?: "An unknown error occurred"))
+                }
+            }
     }
 }

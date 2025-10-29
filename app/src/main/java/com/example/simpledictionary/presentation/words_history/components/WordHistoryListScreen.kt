@@ -29,6 +29,7 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavController
+import com.example.simpledictionary.common.Constants.MOCK_DATA
 import com.example.simpledictionary.presentation.Screen
 import com.example.simpledictionary.presentation.word_detail.WordDetailViewModel
 import com.example.simpledictionary.presentation.words_history.WordHistoryViewModel
@@ -41,8 +42,8 @@ fun WordHistoryListScreen(
             }, null)
 ) {
     var textFieldState by remember { mutableStateOf("") }
-  //  val state = viewModel.state.value
-   // val modifier = Modifier
+
+    //viewModel.addWordDetail(MOCK_DATA)
 
     val constrains = ConstraintSet{
         val input = createRefFor("input")

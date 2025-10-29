@@ -6,5 +6,5 @@ import kotlinx.coroutines.flow.Flow
 interface DictionaryDao {
     suspend fun addWord(wordDetail: WordDetail)
     suspend fun getWord(word:String): WordDetail?
-    suspend fun getWords(): Flow<List<WordDetail>>
+    fun getWords(): Flow<List<WordDetail>>
 }

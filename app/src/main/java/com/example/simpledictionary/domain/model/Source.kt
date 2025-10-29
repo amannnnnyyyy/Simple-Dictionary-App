@@ -2,6 +2,6 @@ package com.example.simpledictionary.domain.model
 
 
 data class Source(
-    val license: License?,
-    val url: String?
+    val license: License?=null,
+    val url: String?=null
 )

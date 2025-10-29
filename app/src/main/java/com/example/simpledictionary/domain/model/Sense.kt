@@ -1,11 +1,11 @@
 package com.example.simpledictionary.domain.model
 
 data class Sense(
-    val antonyms: List<String>?,
-    val definition: String?,
-    val examples: List<String>?,
-    val quotes: List<Quote>?,
-    val subsenses: List<Sense>?,
-    val synonyms: List<String>?,
-    val tags: List<String>?
+    val antonyms: List<String>?=null,
+    val definition: String?=null,
+    val examples: List<String>?=null,
+    val quotes: List<Quote>?=null,
+    val subsenses: List<Sense>?=null,
+    val synonyms: List<String>?=null,
+    val tags: List<String>?=null
 )
