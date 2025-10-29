@@ -6,9 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.simpledictionary.common.Resource
 import com.example.simpledictionary.domain.model.WordDetail
-import com.example.simpledictionary.domain.use_case.get_word_detail.GetWordDetailUseCase
-import com.example.simpledictionary.domain.use_case.get_words_history.AddWordHistoryUseCase
-import com.example.simpledictionary.domain.use_case.get_words_history.GetWordHistoryUseCase
+import com.example.simpledictionary.domain.use_case.words_history.AddWordHistoryUseCase
+import com.example.simpledictionary.domain.use_case.words_history.GetWordHistoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -34,6 +33,17 @@ class WordHistoryViewModel@Inject constructor(
     }
 
     fun addWordDetail(wordDetail: WordDetail){
+        Log.i("FireStoreAdd", "Result: started it")
+
+        viewModelScope.launch(Dispatchers.IO) {
+            addWordHistoryUseCase(wordDetail).collectLatest { addedWord->
+                Log.i("FireStoreAdd", "Result: started $addedWord")
+            }
+        }
+
+    }
+
+    fun getWord(wordDetail: WordDetail){
         Log.i("FireStoreAdd", "Result: started it")
 
         viewModelScope.launch(Dispatchers.IO) {

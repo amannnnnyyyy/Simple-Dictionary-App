@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.simpledictionary.common.Resource
 import com.example.simpledictionary.domain.model.WordDetail
-import com.example.simpledictionary.domain.use_case.get_word_detail.GetWordDetailUseCase
+import com.example.simpledictionary.domain.use_case.word_detail_online.GetWordDetailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach

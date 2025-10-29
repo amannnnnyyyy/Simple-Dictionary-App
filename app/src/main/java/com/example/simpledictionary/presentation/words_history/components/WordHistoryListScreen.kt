@@ -30,6 +30,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavController
 import com.example.simpledictionary.common.Constants.MOCK_DATA
+import com.example.simpledictionary.common.Resource
 import com.example.simpledictionary.presentation.Screen
 import com.example.simpledictionary.presentation.word_detail.WordDetailViewModel
 import com.example.simpledictionary.presentation.words_history.WordHistoryViewModel
@@ -69,8 +70,24 @@ fun WordHistoryListScreen(
     ConstraintLayout(constrains,modifier = Modifier.fillMaxSize()) {
         Box(modifier = Modifier
             .fillMaxWidth()
-            .layoutId("content")){
-            Text("History List")
+            .layoutId("content")
+            .padding(20.dp)
+        ){
+            viewModel.state.value.let { resource ->
+                when(resource){
+                    is Resource.Loading ->{}
+                    is Resource.Success ->{
+                        resource.data?.forEach { wordDetail ->
+                            val language = wordDetail.entries?.find { it.language?.name!=null }?.language?.name
+                            val word = wordDetail.word
+                            if (word!=null && language!=null){
+                                WordListItem(word, language)
+                            }
+                        }
+                    }
+                    is Resource.Error -> {}
+                }
+            }
         }
         Row(modifier = Modifier
             .layoutId("input")

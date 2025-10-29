@@ -1,4 +1,4 @@
-package com.example.simpledictionary.domain.use_case.get_words_history
+package com.example.simpledictionary.domain.use_case.words_history
 
 import com.example.simpledictionary.common.Resource
 import com.example.simpledictionary.domain.db.DictionaryDao

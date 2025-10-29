@@ -1,27 +1,25 @@
-package com.example.simpledictionary.domain.use_case.get_word_detail
+package com.example.simpledictionary.domain.use_case.words_history
 
 import android.util.Log
 import com.example.simpledictionary.common.Resource
-import com.example.simpledictionary.data.remote.dto.toWordDetail
+import com.example.simpledictionary.domain.db.DictionaryDao
 import com.example.simpledictionary.domain.model.WordDetail
-import com.example.simpledictionary.domain.repository.WordDetailRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okio.IOException
 import retrofit2.HttpException
 import javax.inject.Inject
 
-class GetWordDetailUseCase @Inject constructor(
-    private val repository: WordDetailRepository
-) {
-    operator fun invoke(word:String): Flow<Resource<WordDetail>> = flow {
+data class AddWordHistoryUseCase@Inject constructor(
+    private val repository: DictionaryDao
+){
+    operator fun invoke(word: WordDetail): Flow<Resource<WordDetail>> = flow {
         try {
-            Log.i("Database_fetched", "getWordDetail: started usecase")
+            Log.i("FireStoreAdd", "Result: started adding in usecase")
 
             emit(Resource.Loading())
-            val wordDetail = repository.getWordDetail(word)
-            emit(Resource.Success(wordDetail.toWordDetail()))
-
+            repository.addWord(word)
+            emit(Resource.Success(word))
         }catch (e: HttpException){
             emit(Resource.Error(e.localizedMessage?:"An unexpected error occurred!"))
         }catch (e: IOException){
