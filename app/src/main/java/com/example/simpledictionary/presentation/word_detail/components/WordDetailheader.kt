@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun WordDetailHeader(index: Int,word:String, meaning:String, expandedState: Int, changeExpandedState:()->Unit) {
     val rotationState by animateFloatAsState(
-        targetValue = if((expandedState!=-1)) 90f else 0f
+        targetValue = if((expandedState!=index)) 90f else 0f
     )
 
     Row(verticalAlignment = Alignment.CenterVertically) {
