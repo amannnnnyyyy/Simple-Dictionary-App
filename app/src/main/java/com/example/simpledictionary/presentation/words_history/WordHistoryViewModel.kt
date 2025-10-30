@@ -44,10 +44,13 @@ class WordHistoryViewModel@Inject constructor(
             is Resource.Success -> {
                 val data = res.data
                 val filteredData = data?.filter { wordDetail ->
-                    Log.i("Searching", "${wordDetail.word} : $word")
                     wordDetail.word?.startsWith(word,ignoreCase = true)?:true
                 }
-                noSimilarDataNotifier.value = (filteredData?.size?:0)==0
+                Log.i("Searching", "filterWordDetailsByWord: ${word.isBlank()} :  ${filteredData?.size}")
+                noSimilarDataNotifier.value =
+                    if (word.isBlank()) false
+                    else if ((filteredData?.size?:0)==0) true
+                    else filteredData?.any{it.word != word}?:true
                 _stateForFiltering.value = Resource.Success(filteredData?: listOf())
             }
             else->{}
