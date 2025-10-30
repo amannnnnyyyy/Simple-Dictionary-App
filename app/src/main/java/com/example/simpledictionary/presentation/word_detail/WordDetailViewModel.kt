@@ -1,18 +1,13 @@
 package com.example.simpledictionary.presentation.word_detail
 
 import android.util.Log
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.simpledictionary.R
 import com.example.simpledictionary.common.Resource
 import com.example.simpledictionary.domain.model.WordDetail
 import com.example.simpledictionary.domain.use_case.word_detail_online.GetWordDetailUseCase
 import com.example.simpledictionary.domain.use_case.words_history.AddWordHistoryUseCase
 import com.example.simpledictionary.domain.use_case.words_history.GetWordDetailHistoryByWord
-import com.example.simpledictionary.domain.use_case.words_history.GetWordHistoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,37 +29,11 @@ class WordDetailViewModel @Inject constructor(
     private val _state: MutableStateFlow<Resource<WordDetail>> = MutableStateFlow<Resource<WordDetail>>(Resource.Loading())
     val state: StateFlow<Resource<WordDetail>> = _state
 
-
-
-
-    fun getWordDetail(word:String): Resource<WordDetail>{
-        Log.i("Database_fetched", "getWordDetail: to call usecase")
-        getWordDetailUseCase(word).onEach { result->
-            when(result){
-                is Resource.Error<*> -> {
-                    Log.i("2Check word detail", "getWordDetail: trigger remote")
-                    getWordDetailFromRemote(word)
-                }
-                is Resource.Loading -> {
-                    Log.i("2Check word detail", "getWordDetail: loading")
-                    _state.value = Resource.Loading()
-                }
-                is Resource.Success -> {
-                    Log.i("2Check word detail", "getWordDetail: success")
-                    _state.value = result
-                }
-            }
-        }.launchIn(viewModelScope)
-        return _state.value
-    }
-
     fun getWordDetailFromRemote(word: String) {
         getWordDetailUseCase(word).onEach { result ->
             _state.value = result
         }.launchIn(viewModelScope)
     }
-
-
 
      fun getWordDetailLocally(word:String): Resource<WordDetail>{
         getWordHistoryByWordUseCase(word).onEach { result->
