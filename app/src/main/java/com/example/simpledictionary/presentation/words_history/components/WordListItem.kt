@@ -30,18 +30,18 @@ fun WordListItem(word:String = "test",description:String="test desc", onClick:()
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(10.dp))
-            .background(Color.DarkGray)
-            .shadow(1.dp,
-                RoundedCornerShape(2.dp),
-                spotColor = Color.Cyan)
-            .padding(10.dp)
+            .background(Color.Black)
             .clickable(true){
                 onClick()
             }
+            .shadow(1.dp,
+                RoundedCornerShape(2.dp),
+                spotColor = Color.Black)
+            .padding(10.dp)
     ){
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth().padding(2.dp)) {
-            Text(word, color = Color.White, fontSize = 22.sp, modifier = Modifier.weight(1f).padding(5.dp), maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text(description, color = Color.White, fontSize = 22.sp, modifier = Modifier.weight(1f).padding(5.dp), maxLines = 2, overflow = TextOverflow.Ellipsis)
+            Text(word, color = Color.White, fontSize = 16.sp, modifier = Modifier.weight(1f).padding(5.dp), maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(description, color = Color.White, fontSize = 14.sp, modifier = Modifier.weight(1f).padding(5.dp), maxLines = 2, overflow = TextOverflow.Ellipsis)
         }
     }
 }

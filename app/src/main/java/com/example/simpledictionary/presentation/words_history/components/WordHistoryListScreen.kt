@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -23,10 +25,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
@@ -34,8 +42,11 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavController
+import com.example.simpledictionary.R
 import com.example.simpledictionary.common.Resource
 import com.example.simpledictionary.presentation.Screen
+import com.example.simpledictionary.presentation.ui.theme.font_milven
+import com.example.simpledictionary.presentation.ui.theme.font_philosopher
 import com.example.simpledictionary.presentation.words_history.WordHistoryViewModel
 
 @Composable
@@ -47,6 +58,9 @@ fun WordHistoryListScreen(
 ) {
     var textFieldState by remember { mutableStateOf("") }
     viewModel.noSimilarDataNotifier.value = false
+
+    val scrollState = rememberScrollState()
+
 
     val constrains = ConstraintSet{
         val input = createRefFor("input")
@@ -73,10 +87,10 @@ fun WordHistoryListScreen(
         Column(modifier = Modifier
             .fillMaxSize()
             .layoutId("content")
-            .padding(20.dp),
+            .padding(20.dp)
+            .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ){
-            Text("Saved Words")
             viewModel.stateForFiltering.let{ resource->
                 if (textFieldState.isEmpty()){
                     GetAllWordDetails(viewModel, navController)
@@ -111,28 +125,39 @@ fun WordHistoryListScreen(
             }
 
         }
-        Row(modifier = Modifier
-            .layoutId("input")
-            .clip(RoundedCornerShape(10.dp))
-            .animateContentSize()
-        ) {
-            TextField(
-                textFieldState,
-                label = { Text("Search a word") },
-                onValueChange = {
-                    textFieldState = it
-                    viewModel.filterWordDetailsByWord(textFieldState)
-                     },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(0.6f)
-            )
-            Spacer(modifier = Modifier.width(15.dp))
-            if (viewModel.noSimilarDataNotifier.value){
-                Button(onClick = {
-                    navController.navigate(Screen.DetailScreen.route+"/${textFieldState}")
+        Column(modifier = Modifier
+            .layoutId("input"),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Row(modifier = Modifier
+                .clip(RoundedCornerShape(10.dp))
+                .animateContentSize()
+            ) {
+                TextField(
+                    textFieldState,
+                    label = { Text("Search a word") },
+                    onValueChange = {
+                        textFieldState = it
+                        viewModel.filterWordDetailsByWord(textFieldState)
+                    },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(0.6f)
+                )
+                Spacer(modifier = Modifier.width(15.dp))
+                if (viewModel.noSimilarDataNotifier.value){
+                    Button(onClick = {
+                        navController.navigate(Screen.DetailScreen.route+"/${textFieldState}")
 //                viewModel.getWordDetail(textFieldState)
-                }) { Text("Search")}
+                    }) { Text("Search")}
+                }
             }
+
+            Text(buildAnnotatedString {
+                    withStyle(SpanStyle(Color.White, fontStyle = FontStyle.Italic, fontFamily = font_philosopher)){
+                        append("Saved Words")
+                    }
+                },
+                modifier = Modifier.fillMaxWidth().padding(start = 30.dp, top = 15.dp))
         }
     }
 
