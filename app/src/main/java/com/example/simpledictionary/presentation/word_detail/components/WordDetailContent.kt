@@ -48,7 +48,6 @@ fun WordDetailContent(constraints: ConstraintSet, item: Entry = Entry(null, null
         }
         Box(modifier = Modifier.background(color = Color.Transparent).layoutId("pronunciations")){
             Column(modifier = Modifier.padding(5.dp).fillMaxWidth()) {
-                //items(item.pronunciations?:listOf()){ pronunciation ->
                 Row {
                     item.pronunciations?.size?.let {
                         Text(if (it>0) item.pronunciations[0].type?:"" else "")

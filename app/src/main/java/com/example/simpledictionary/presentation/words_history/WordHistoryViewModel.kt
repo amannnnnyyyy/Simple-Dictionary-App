@@ -48,7 +48,7 @@ class WordHistoryViewModel@Inject constructor(
                 noSimilarDataNotifier.value =
                     if (word.isBlank()) false
                     else if ((filteredData?.size?:0)==0) true
-                    else filteredData?.any{it.word != word}?:true
+                    else filteredData?.none{it.word == word}?:false
                 _stateForFiltering.value = Resource.Success(filteredData?: listOf())
             }
             else->{}

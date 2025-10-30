@@ -60,7 +60,7 @@ import kotlin.math.roundToInt
 
 @Preview()
 @Composable
-fun WordDetailItemMock(data: WordDetail = MOCK_DATA, onSaveClicked:()-> Unit={}, onAnotherWordSearched:(String)-> Unit={}){
+fun WordDetailItem(data: WordDetail = MOCK_DATA, onSaveClicked:()-> Unit={}, onAnotherWordSearched:(String)-> Unit={}){
     val scrollState = rememberScrollState()
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
@@ -68,7 +68,6 @@ fun WordDetailItemMock(data: WordDetail = MOCK_DATA, onSaveClicked:()-> Unit={},
 
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
-
     var expandedState by remember { mutableIntStateOf(0) }
     var savedWordDetail by remember { mutableStateOf(false) }
 
