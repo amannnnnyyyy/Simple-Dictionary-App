@@ -55,7 +55,9 @@ fun WordDetailScreen(
         is Resource.Error<*> -> {
             Text(
                 text = currentState.message ?: "An unknown error occurred.",
-                modifier = Modifier.align(Alignment.Center).padding(15.dp)
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(15.dp)
             )
         }
 
@@ -67,10 +69,14 @@ fun WordDetailScreen(
             )
         }
         is Resource.Success<*> -> {
+            Log.i("Recalled_detail", "WordDetailScreen: ${currentState.data?.word}")
             currentState.data?.let { wordDetail ->
+                Log.i("Recalled_detail", "Called again: ${currentState.data.fromDb}")
                 WordDetailItemMock(
                     data = wordDetail,
-                    onSaveClicked = { viewModel.addWordDetail(wordDetail) }
+                    onSaveClicked = {
+                        viewModel.addWordDetail(wordDetail)
+                    }
                 )
             }
         }

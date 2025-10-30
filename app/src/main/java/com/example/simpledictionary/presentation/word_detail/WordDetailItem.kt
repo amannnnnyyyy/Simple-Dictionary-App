@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,6 +30,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -70,8 +70,10 @@ fun WordDetailItemMock(data: WordDetail = MOCK_DATA, onSaveClicked:()-> Unit={},
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
     var expandedState by remember { mutableIntStateOf(0) }
+    var savedWordDetail by remember { mutableStateOf(false) }
 
-    Log.i("checkImage", "${data.fromDb} : ${R.drawable.saved}")
+
+    Log.i("Recalled_detail", "outside of inside: ${data.fromDb}")
 
 
 
@@ -178,16 +180,18 @@ fun WordDetailItemMock(data: WordDetail = MOCK_DATA, onSaveClicked:()-> Unit={},
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     fontStyle = FontStyle.Italic)
+                Log.i("Recalled_detail", "WordDetailItemMock: ${data.fromDb}")
                 Icon(
-                    painterResource(if ((data.fromDb)?:false) R.drawable.saved else R.drawable.unsaved),
+                    painterResource(if (savedWordDetail || (data.fromDb)?:false) R.drawable.saved else R.drawable.unsaved),
                     "Saved Status Indicator",
                     modifier = Modifier
-                        .clickable(true) {
+                        .clickable((data.fromDb?.let { !it }) ?: true) {
                             onSaveClicked()
+                            savedWordDetail = true
                         }
                         .height(20.dp)
                         .width(20.dp)
-                        .weight(1f)
+                        .clip(RoundedCornerShape(15.dp))
                 )
             }
             Box(modifier = Modifier.layoutId("entries")){
@@ -223,5 +227,7 @@ fun WordDetailItemMock(data: WordDetail = MOCK_DATA, onSaveClicked:()-> Unit={},
             ){
                 SourceCard(data.source?:Source(null, null))
             }
+
+
     }
 }

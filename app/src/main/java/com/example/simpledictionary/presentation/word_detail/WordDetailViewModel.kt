@@ -58,8 +58,13 @@ class WordDetailViewModel @Inject constructor(
     fun addWordDetail(wordDetail: WordDetail){
         wordDetail.fromDb = true
         viewModelScope.launch(Dispatchers.IO) {
-            addWordHistoryUseCase(wordDetail).collectLatest { addedWord-> }
+            addWordHistoryUseCase(wordDetail).collectLatest { addedWord->
+                when(addedWord){
+                    is Resource.Error<*> -> {}
+                    is Resource.Loading<*> -> {}
+                    is Resource.Success<*> -> _state.value = Resource.Success(wordDetail)
+                }
+            }
         }
-
     }
 }

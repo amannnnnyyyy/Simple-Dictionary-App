@@ -3,7 +3,6 @@ package com.example.simpledictionary.presentation.words_history.components
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +14,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -73,8 +74,9 @@ fun WordHistoryListScreen(
             .fillMaxSize()
             .layoutId("content")
             .padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            verticalArrangement = Arrangement.spacedBy(10.dp),
         ){
+            Text("Saved Words")
             viewModel.stateForFiltering.let{ resource->
                 if (textFieldState.isEmpty()){
                     GetAllWordDetails(viewModel, navController)
@@ -83,12 +85,15 @@ fun WordHistoryListScreen(
                 val res = resource.value
                 when(res){
                     is Resource.Loading->{
-                        GetAllWordDetails(viewModel, navController)
+                        CircularProgressIndicator(
+                            modifier = Modifier.width(64.dp),
+                            color = MaterialTheme.colorScheme.secondary,
+                            trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                        )
                     }
                     is Resource.Success->{
                         val data = res.data
-                        LazyColumn(modifier = Modifier.fillMaxSize().padding(15.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                            items(data?.toList()?:listOf()) { wordDetail->
+                            for(wordDetail in data?.toList()?:listOf()) {
                                     val language = wordDetail.entries?.find { it.language?.name!=null }?.language?.name
                                     val word = wordDetail.word
                                     if (word!=null && language!=null){
@@ -98,7 +103,6 @@ fun WordHistoryListScreen(
                                     }
                             }
 
-                        }
                     }
                     is Resource.Error ->{
 
