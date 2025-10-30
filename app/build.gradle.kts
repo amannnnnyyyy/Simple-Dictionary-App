@@ -81,6 +81,8 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.firebase.firestore)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.core)
 
     ksp(libs.hilt.compiler)
     testImplementation(libs.junit)

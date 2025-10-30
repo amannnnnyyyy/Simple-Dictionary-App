@@ -7,5 +7,6 @@ data class WordDetailState(
     val wordDetails: WordDetail = WordDetail(
         null, null, source = null
     ),
-    val error: String = ""
+    val error: String = "",
+    val success:Boolean = false
     )

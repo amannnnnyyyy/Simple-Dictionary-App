@@ -18,6 +18,7 @@ data class AddWordHistoryUseCase@Inject constructor(
             Log.i("FireStoreAdd", "Result: started adding in usecase")
 
             emit(Resource.Loading())
+            Log.i("checkImage", "invoke: ${word.fromDb}")
             repository.addWord(word)
             emit(Resource.Success(word))
         }catch (e: HttpException){

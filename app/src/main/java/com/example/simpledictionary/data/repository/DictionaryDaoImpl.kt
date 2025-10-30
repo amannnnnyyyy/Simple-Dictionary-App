@@ -58,6 +58,8 @@ class DictionaryDaoImpl@Inject constructor(private val firestore: FirebaseFirest
             if (snapshot != null) {
                 val words = snapshot.documents.mapNotNull { document ->
                     try {
+                        Log.e("Database_fetched", "fetched ${document}")
+
                         document.toObject(WordDetail::class.java)
                     } catch (e: Exception) {
                         Log.e("Database_fetched", "Error parsing document ${document.id}", e)

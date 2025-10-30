@@ -1,5 +1,7 @@
 package com.example.simpledictionary.presentation.word_detail
 
+import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
@@ -35,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
@@ -63,10 +66,16 @@ fun WordDetailItemMock(data: WordDetail = MOCK_DATA, onSaveClicked:()-> Unit={},
     var offsetY by remember { mutableFloatStateOf(0f) }
     LaunchedEffect(Unit) { scrollState.animateScrollTo(100) }
 
+    val configuration = LocalConfiguration.current
+    val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+
     var expandedState by remember { mutableIntStateOf(0) }
 
+    Log.i("checkImage", "${data.fromDb} : ${R.drawable.saved}")
 
-val constraints  = ConstraintSet{
+
+
+    val constraints  = ConstraintSet{
     val language = createRefFor("language")
     val pronunciations = createRefFor("pronunciations")
     val forms = createRefFor("forms")
@@ -147,7 +156,8 @@ val constraints  = ConstraintSet{
 
     ConstraintLayout(wholeConstraints,
         modifier = Modifier
-            .fillMaxSize().padding(top=10.dp)
+            .fillMaxSize()
+            .padding(top = 10.dp)
     ) {
 
             Row(verticalAlignment = Alignment.CenterVertically,
@@ -160,24 +170,29 @@ val constraints  = ConstraintSet{
                 ,
                 horizontalArrangement = Arrangement.SpaceBetween){
                 Text(data.word?:"",
-                    modifier = Modifier.padding(5.dp).weight(2f),
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .weight(2f),
                     style = MaterialTheme.typography.headlineMedium,
                     color = Color.White,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     fontStyle = FontStyle.Italic)
                 Icon(
-                    painterResource(R.drawable.unsaved),
+                    painterResource(if ((data.fromDb)?:false) R.drawable.saved else R.drawable.unsaved),
                     "Saved Status Indicator",
-                    modifier = Modifier.clickable(true){
-                        onSaveClicked()
-                    }.height(20.dp).width(20.dp)
+                    modifier = Modifier
+                        .clickable(true) {
+                            onSaveClicked()
+                        }
+                        .height(20.dp)
+                        .width(20.dp)
                         .weight(1f)
                 )
             }
             Box(modifier = Modifier.layoutId("entries")){
                 LazyColumn(
-                    modifier = Modifier.fillMaxHeight(0.7f),
+                    modifier = Modifier.fillMaxHeight(if (isPortrait) 0.89f else 0.7f),
                     verticalArrangement = spacedBy(10.dp)
                 ) {
                     itemsIndexed(data.entries?:listOf()){ index, item ->
@@ -198,13 +213,13 @@ val constraints  = ConstraintSet{
             }
             Box(modifier = Modifier
                 .layoutId("source")
-                .offset{IntOffset(offsetX.roundToInt(), offsetY.roundToInt())}
+                .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
                 .draggable(
-                orientation = Orientation.Horizontal,
-                state = rememberDraggableState { delta ->
-                    offsetX += delta
-                }
-            )
+                    orientation = Orientation.Horizontal,
+                    state = rememberDraggableState { delta ->
+                        offsetX += delta
+                    }
+                )
             ){
                 SourceCard(data.source?:Source(null, null))
             }

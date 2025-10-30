@@ -1,5 +1,6 @@
 package com.example.simpledictionary.presentation.word_detail.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,10 +22,15 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import com.example.simpledictionary.common.Resource
 import com.example.simpledictionary.presentation.word_detail.WordDetailViewModel
 import com.example.simpledictionary.presentation.word_detail.WordDetailItemMock
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import okhttp3.internal.wait
+import kotlin.math.log
 
 @Composable
 fun WordDetailScreen(
@@ -71,28 +77,10 @@ fun WordDetailScreen(
             )
         }
     }else{
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .layoutId("content")){
-            WordDetailItemMock( viewModel.state.value.wordDetails, onSaveClicked = {
-                viewModel.addWordDetail(viewModel.state.value.wordDetails)
-            }, onAnotherWordSearched= { word->
-                showLoading = true
-                showFinalLoading = true
-                    scope.launch {
-                        fetchWordDetail(word, viewModel,
-                            changeShowLoading = {
-                                showLoading=it
-                            },
-                            changeFinalShowLoading = {
-                                showFinalLoading = it
-                            },
-                            updateProgress = {
-                                currentProgress = it
-                            })
-                    }
-            })
+        viewModel.state.value.wordDetails.let{ wordDetail ->
+            WordDetailItemMock(wordDetail, onSaveClicked = {viewModel.addWordDetail(wordDetail)})
         }
+
     }
 }
 
@@ -114,13 +102,20 @@ private suspend fun fetchWordDetail(
 }
 
 
-private suspend fun handleWordCollect(word:String, viewModel: WordDetailViewModel, doneFirstLoading:(Boolean)-> Unit, updateProgress: (Float) -> Unit){
+private fun handleWordCollect(word:String, viewModel: WordDetailViewModel, doneFirstLoading:(Boolean)-> Unit, updateProgress: (Float) -> Unit){
     for (x in 0..100){
         updateProgress(x.toFloat()/100f)
-        delay(5)
     }
     doneFirstLoading(true)
-    delay(1000)
-    return viewModel.getWordDetail(word)
+    runBlocking {
+        val first = async { viewModel.getWordDetailLocally(word) }
+
+        val res = first.await()
+
+        Log.i("choosingSource", "handleWordCollect: ${res.data}")
+        //viewModel.getWordDetail(word)
+        //Log.i("choosingSource", "handleWordCollect: ${viewModel.state}")
+    }
+
 }
 

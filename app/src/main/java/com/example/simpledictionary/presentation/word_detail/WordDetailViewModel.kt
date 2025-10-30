@@ -3,12 +3,16 @@ package com.example.simpledictionary.presentation.word_detail
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.simpledictionary.R
 import com.example.simpledictionary.common.Resource
 import com.example.simpledictionary.domain.model.WordDetail
 import com.example.simpledictionary.domain.use_case.word_detail_online.GetWordDetailUseCase
 import com.example.simpledictionary.domain.use_case.words_history.AddWordHistoryUseCase
+import com.example.simpledictionary.domain.use_case.words_history.GetWordDetailHistoryByWord
+import com.example.simpledictionary.domain.use_case.words_history.GetWordHistoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -20,14 +24,16 @@ import javax.inject.Inject
 @HiltViewModel
 class WordDetailViewModel @Inject constructor(
     private val getWordDetailUseCase: GetWordDetailUseCase,
-    private val addWordHistoryUseCase: AddWordHistoryUseCase
+    private val addWordHistoryUseCase: AddWordHistoryUseCase,
+    private val getWordHistoryByWordUseCase: GetWordDetailHistoryByWord
 
 ): ViewModel(){
 
     private val _state = mutableStateOf(WordDetailState())
-    val state: State<WordDetailState> = _state
+    val state = _state
 
-    fun getWordDetail(word:String){
+
+    suspend fun getWordDetail(word:String){
         Log.i("Database_fetched", "getWordDetail: to call usecase")
         getWordDetailUseCase(word).onEach { result->
             when(result){
@@ -40,21 +46,40 @@ class WordDetailViewModel @Inject constructor(
                     Log.i("Database_fetched", "loading: ${_state.value}")
                 }
                 is Resource.Success -> {
-                    _state.value = WordDetailState(wordDetails = result.data?: WordDetail(null, null, null))
-                    Log.i("Database_fetched", "success: ${_state.value}")
+                    _state.value = WordDetailState(wordDetails = result.data?: WordDetail(null, null, null), success = true)
+                    Log.i("choosingSource", "success: ${_state.value.success}")
+                }
+            }
+        }
+    }
+
+
+     fun getWordDetailLocally(word:String): Resource<WordDetail>{
+         var resFinal: Resource<WordDetail> = Resource.Loading()
+        getWordHistoryByWordUseCase(word).onEach { result->
+            when(result){
+                is Resource.Error<*> -> {
+                    _state.value = WordDetailState(error = result.message?:"An Unexpected error occurred!")
+                    resFinal = Resource.Error<WordDetail>(_state.value.error)
+                }
+                is Resource.Loading -> {
+                    _state.value = WordDetailState(isLoading = true)
+                    resFinal = Resource.Loading<WordDetail>()
+                }
+                is Resource.Success -> {
+                    _state.value = WordDetailState(wordDetails = result.data?: WordDetail(null, null, null), success = true)
+                    resFinal = Resource.Success<WordDetail>(_state.value.wordDetails)
                 }
             }
         }.launchIn(viewModelScope)
+         return resFinal
     }
 
 
     fun addWordDetail(wordDetail: WordDetail){
-        Log.i("FireStoreAdd", "Result: started it")
-
+        wordDetail.fromDb = true
         viewModelScope.launch(Dispatchers.IO) {
-            addWordHistoryUseCase(wordDetail).collectLatest { addedWord->
-                Log.i("FireStoreAdd", "Result: started $addedWord")
-            }
+            addWordHistoryUseCase(wordDetail).collectLatest { addedWord-> }
         }
 
     }
