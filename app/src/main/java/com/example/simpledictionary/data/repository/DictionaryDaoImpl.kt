@@ -43,7 +43,12 @@ class DictionaryDaoImpl@Inject constructor(private val firestore: FirebaseFirest
     }
 
     override suspend fun getWord(word: String): WordDetail? {
+        Log.i("Check word detail", "WordDetailScreen: went to repo")
+
         val documentSnapshot = wordsCollection.document(word).get().await()
+
+        Log.i("Check word detail", "WordDetailScreen: gotten back from repo doc ${documentSnapshot.data}")
+
 
         return documentSnapshot.toObject(WordDetail::class.java)
     }

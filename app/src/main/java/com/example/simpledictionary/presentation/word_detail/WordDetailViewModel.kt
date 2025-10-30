@@ -15,6 +15,8 @@ import com.example.simpledictionary.domain.use_case.words_history.GetWordDetailH
 import com.example.simpledictionary.domain.use_case.words_history.GetWordHistoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -29,50 +31,58 @@ class WordDetailViewModel @Inject constructor(
 
 ): ViewModel(){
 
-    private val _state = mutableStateOf(WordDetailState())
-    val state = _state
+    private val _state: MutableStateFlow<Resource<WordDetail>> = MutableStateFlow<Resource<WordDetail>>(Resource.Loading())
+    val state: StateFlow<Resource<WordDetail>> = _state
 
 
-    suspend fun getWordDetail(word:String){
+
+
+    fun getWordDetail(word:String): Resource<WordDetail>{
         Log.i("Database_fetched", "getWordDetail: to call usecase")
         getWordDetailUseCase(word).onEach { result->
             when(result){
                 is Resource.Error<*> -> {
-                    _state.value = WordDetailState(error = result.message?:"An Unexpected error occurred!")
-                    Log.i("Database_fetched", "error: ${_state.value}")
+                    Log.i("2Check word detail", "getWordDetail: trigger remote")
+                    getWordDetailFromRemote(word)
                 }
                 is Resource.Loading -> {
-                    _state.value = WordDetailState(isLoading = true)
-                    Log.i("Database_fetched", "loading: ${_state.value}")
+                    Log.i("2Check word detail", "getWordDetail: loading")
+                    _state.value = Resource.Loading()
                 }
                 is Resource.Success -> {
-                    _state.value = WordDetailState(wordDetails = result.data?: WordDetail(null, null, null), success = true)
-                    Log.i("choosingSource", "success: ${_state.value.success}")
-                }
-            }
-        }
-    }
-
-
-     fun getWordDetailLocally(word:String): Resource<WordDetail>{
-         var resFinal: Resource<WordDetail> = Resource.Loading()
-        getWordHistoryByWordUseCase(word).onEach { result->
-            when(result){
-                is Resource.Error<*> -> {
-                    _state.value = WordDetailState(error = result.message?:"An Unexpected error occurred!")
-                    resFinal = Resource.Error<WordDetail>(_state.value.error)
-                }
-                is Resource.Loading -> {
-                    _state.value = WordDetailState(isLoading = true)
-                    resFinal = Resource.Loading<WordDetail>()
-                }
-                is Resource.Success -> {
-                    _state.value = WordDetailState(wordDetails = result.data?: WordDetail(null, null, null), success = true)
-                    resFinal = Resource.Success<WordDetail>(_state.value.wordDetails)
+                    Log.i("2Check word detail", "getWordDetail: success")
+                    _state.value = result
                 }
             }
         }.launchIn(viewModelScope)
-         return resFinal
+        return _state.value
+    }
+
+    fun getWordDetailFromRemote(word: String) {
+        getWordDetailUseCase(word).onEach { result ->
+            _state.value = result
+        }.launchIn(viewModelScope)
+    }
+
+
+
+     fun getWordDetailLocally(word:String): Resource<WordDetail>{
+        getWordHistoryByWordUseCase(word).onEach { result->
+            when(result){
+                is Resource.Error<*> -> {
+                    getWordDetailFromRemote(word)
+                }
+                is Resource.Loading -> {
+                    Log.i("Check word detail", "WordDetailScreen: loading in viewmodel")
+                    _state.value = Resource.Loading()
+                }
+                is Resource.Success -> {
+                    Log.i("Check word detail", "WordDetailScreen: success in viewmodel")
+                    _state.value = Resource.Success(data = result.data?: WordDetail(null, null, null))
+                }
+            }
+        }.launchIn(viewModelScope)
+         return _state.value
     }
 
 

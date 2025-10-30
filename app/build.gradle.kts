@@ -82,6 +82,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.firebase.firestore)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.core.v180)
     implementation(libs.kotlinx.coroutines.core)
 
     ksp(libs.hilt.compiler)

@@ -4,12 +4,15 @@ import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -23,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.example.simpledictionary.common.Resource
+import com.example.simpledictionary.domain.model.WordDetail
 import com.example.simpledictionary.presentation.word_detail.WordDetailViewModel
 import com.example.simpledictionary.presentation.word_detail.WordDetailItemMock
 import kotlinx.coroutines.async
@@ -37,85 +41,40 @@ fun WordDetailScreen(
     word:String,
     viewModel: WordDetailViewModel = hiltViewModel(checkNotNull(LocalViewModelStoreOwner.current) {
     "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
-}, null)){
-    var showLoading by remember { mutableStateOf(true) }
-    var showFinalLoading by remember { mutableStateOf(true) }
+}, null)) {
 
+    val state by viewModel.state.collectAsState()
 
-    val scope = rememberCoroutineScope()
-    var currentProgress by remember { mutableFloatStateOf(0f) }
-
-
-    LaunchedEffect(Unit) {
-        scope.launch {
-            fetchWordDetail(word, viewModel,
-                changeShowLoading = {
-                showLoading=it
-            },
-                changeFinalShowLoading = {
-                showFinalLoading = it
-            },
-                updateProgress = {
-                    currentProgress = it
-                })
-        }
+    LaunchedEffect(word) {
+        viewModel.getWordDetailLocally(word)
     }
 
-    if (showLoading){
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
-            LinearProgressIndicator(
-                progress = { currentProgress },
-                modifier = Modifier.fillMaxWidth(),
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+
+    when (val currentState = state) {
+        is Resource.Error<*> -> {
+            Text(
+                text = currentState.message ?: "An unknown error occurred.",
+                modifier = Modifier.align(Alignment.Center).padding(15.dp)
             )
         }
-    }else if (showFinalLoading){
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+
+        is Resource.Loading<*> -> {
             CircularProgressIndicator(
                 modifier = Modifier.width(64.dp),
                 color = MaterialTheme.colorScheme.secondary,
                 trackColor = MaterialTheme.colorScheme.surfaceVariant,
             )
         }
-    }else{
-        viewModel.state.value.wordDetails.let{ wordDetail ->
-            WordDetailItemMock(wordDetail, onSaveClicked = {viewModel.addWordDetail(wordDetail)})
+        is Resource.Success<*> -> {
+            currentState.data?.let { wordDetail ->
+                WordDetailItemMock(
+                    data = wordDetail,
+                    onSaveClicked = { viewModel.addWordDetail(wordDetail) }
+                )
+            }
         }
-
     }
 }
-
-private suspend fun fetchWordDetail(
-    word:String,
-    viewModel: WordDetailViewModel,
-    changeShowLoading:(Boolean)-> Unit,
-    changeFinalShowLoading: (Boolean)-> Unit,
-    updateProgress: (Float) -> Unit
-    ){
-    handleWordCollect(word, viewModel, doneFirstLoading = { value->
-        if (value){
-           changeShowLoading(false)
-        }
-    }){ progress ->
-        updateProgress(progress)
-    }
-    changeFinalShowLoading(false)
-}
-
-
-private fun handleWordCollect(word:String, viewModel: WordDetailViewModel, doneFirstLoading:(Boolean)-> Unit, updateProgress: (Float) -> Unit){
-    for (x in 0..100){
-        updateProgress(x.toFloat()/100f)
-    }
-    doneFirstLoading(true)
-    runBlocking {
-        val first = async { viewModel.getWordDetailLocally(word) }
-
-        val res = first.await()
-
-        Log.i("choosingSource", "handleWordCollect: ${res.data}")
-        //viewModel.getWordDetail(word)
-        //Log.i("choosingSource", "handleWordCollect: ${viewModel.state}")
-    }
-
 }
 
