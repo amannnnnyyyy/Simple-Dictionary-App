@@ -1,7 +1,6 @@
 package com.example.simpledictionary.presentation.words_history.components
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -32,7 +29,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
@@ -42,10 +38,8 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavController
-import com.example.simpledictionary.R
 import com.example.simpledictionary.common.Resource
 import com.example.simpledictionary.presentation.Screen
-import com.example.simpledictionary.presentation.ui.theme.font_milven
 import com.example.simpledictionary.presentation.ui.theme.font_philosopher
 import com.example.simpledictionary.presentation.words_history.WordHistoryViewModel
 
@@ -147,7 +141,6 @@ fun WordHistoryListScreen(
                 if (viewModel.noSimilarDataNotifier.value){
                     Button(onClick = {
                         navController.navigate(Screen.DetailScreen.route+"/${textFieldState}")
-//                viewModel.getWordDetail(textFieldState)
                     }) { Text("Search")}
                 }
             }

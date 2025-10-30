@@ -32,7 +32,6 @@ class WordHistoryViewModel@Inject constructor(
     init {
         viewModelScope.launch {
             getWordHistoryUseCase().collectLatest { wordDetailList ->
-                Log.i("FireStoreFetch", "Result: ${wordDetailList.data}")
                 _state.value = wordDetailList
             }
         }
@@ -46,7 +45,6 @@ class WordHistoryViewModel@Inject constructor(
                 val filteredData = data?.filter { wordDetail ->
                     wordDetail.word?.startsWith(word,ignoreCase = true)?:true
                 }
-                Log.i("Searching", "filterWordDetailsByWord: ${word.isBlank()} :  ${filteredData?.size}")
                 noSimilarDataNotifier.value =
                     if (word.isBlank()) false
                     else if ((filteredData?.size?:0)==0) true
@@ -56,16 +54,4 @@ class WordHistoryViewModel@Inject constructor(
             else->{}
         }
     }
-
-    fun getWord(wordDetail: WordDetail){
-        Log.i("FireStoreAdd", "Result: started it")
-
-        viewModelScope.launch(Dispatchers.IO) {
-//            addWordHistoryUseCase(wordDetail).collectLatest { addedWord->
-//                Log.i("FireStoreAdd", "Result: started $addedWord")
-//            }
-        }
-
-    }
-
 }
